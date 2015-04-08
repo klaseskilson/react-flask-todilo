@@ -53,8 +53,8 @@ def query_db(query, args = (), commit = False, one=False):
 """
 
 @app.route('/')
-def show_home():
-    return render_template('home.html')
+def show_app():
+    return render_template('app.html')
 
 @app.route('/todos.json', methods = ['GET'])
 def show_todos():
