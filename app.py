@@ -53,7 +53,7 @@ def show_todos():
     # respond with json
     return jsonify(todos = json_results)
 
-@app.route('/add.json', methods=['POST'])
+@app.route('/add.json', methods = ['POST'])
 def add_todo():
     # try to save
     try:
@@ -61,8 +61,33 @@ def add_todo():
             [request.form['title'], request.form['below']])
         g.db.commit()
         # prep response
-        resp = jsonify(message='created todo')
-        resp.status_code = 200
+        resp = jsonify(message = 'created todo')
+        return resp
+    except Exception as e:
+        return jsonify({"response": "ERROR %s" % str(e)})
+
+@app.route('/<int:todo_id>/status.json', methods = ['POST'])
+def set_status(todo_id):
+    try:
+        g.db.execute('update todos set completed = ? where id = ?',
+            [request.form['completed'], todo_id])
+        g.db.commit()
+        resp = jsonify(message = 'updated todo',
+                       id = todo_id,
+                       completed = request.form['completed'])
+        return resp
+    except Exception as e:
+        return jsonify({"response": "ERROR %s" % str(e)})
+
+@app.route('/<int:todo_id>/order.json', methods = ['POST'])
+def set_order(todo_id):
+    try:
+        g.db.execute('update todos set below = ? where id = ?',
+            [request.form['below'], todo_id])
+        g.db.commit()
+        resp = jsonify(message = 'updated todo',
+                       id = todo_id,
+                       below = request.form['below'])
         return resp
     except Exception as e:
         return jsonify({"response": "ERROR %s" % str(e)})
