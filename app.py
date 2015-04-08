@@ -1,6 +1,7 @@
 # import our packages
 import sqlite3
-from flask import Flask, request, g, render_template, jsonify, flash
+from flask import Flask, request, g, render_template, jsonify, flash, redirect, \
+url_for
 from contextlib import closing
 
 # setup app with config
@@ -78,12 +79,11 @@ def create_todo():
     try:
         # get last todo
         last = query_db('select id from todos order by below desc limit 1', (), False, True)
+        last = last[0] if last else None
         # insert new todo below the last one in the list
         query_db('insert into todos (title, below) values (?, ?)',
-            [request.form['title'], last[0]], True)
-        # prep response
-        resp = jsonify(message = 'created todo')
-        return resp
+            [request.form['title'], last], True)
+        return redirect(url_for('show_todos'))
     except Exception as e:
         return jsonify({"response": "ERROR %s" % str(e)})
 
