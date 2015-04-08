@@ -1,52 +1,13 @@
-var data = [
-  {
-    "below": 0,
-    "completed": 0,
-    "id": 2,
-    "title": "todo1"
-  },
-  {
-    "below": 0,
-    "completed": 0,
-    "id": 3,
-    "title": "asdasda a asd asd as da"
-  },
-  {
-    "below": 1,
-    "completed": 0,
-    "id": 4,
-    "title": "hahaha"
-  },
-  {
-    "below": 1,
-    "completed": 0,
-    "id": 5,
-    "title": "alla senaste"
-  },
-  {
-    "below": 1,
-    "completed": 0,
-    "id": 6,
-    "title": "allra senaste"
-  },
-  {
-    "below": 1,
-    "completed": 0,
-    "id": 7,
-    "title": "allra senaste"
-  },
-  {
-    "below": 2,
-    "completed": 3,
-    "id": 1,
-    "title": "todo"
-  }
-];
 var Todo = React.createClass({
+  toggleStatus: function(e) {
+    this.props.onSetStatus(this.props.id, !this.props.completed);
+    this.props.completed = !this.props.completed;
+  },
   render: function() {
     return (
       <article>
-        <input type="checkbox" value="1" checked={this.props.completed} />
+        <input type="checkbox" onChange={this.toggleStatus} value="1"
+          checked={this.props.completed} />
         {this.props.title}
       </article>
       );
@@ -54,14 +15,12 @@ var Todo = React.createClass({
 });
 var TodoList = React.createClass({
   render: function() {
-    // var createItem = function(itemText, index) {
-    //   return <article key={index + itemText}>{itemText}</article>;
-    // };
-    // return <div>{this.props.items.map(createItem)}</div>;
+    var list = this;
     document.title = 'Todo (' + (this.props.data.length) + ')';
     var todoNodes = this.props.data.map(function(todo) {
       return (<Todo title={todo.title} id={todo.id} below={todo.below}
-        completed={todo.completed} key={todo.id} />);
+        completed={todo.completed} key={todo.id}
+        onSetStatus={list.props.onSetStatus} />);
     });
     return <div>{todoNodes}</div>;
   }
@@ -85,7 +44,7 @@ var TodoForm = React.createClass({
   render: function() {
     return (
       <form onSubmit={this.handleSubmit}>
-        <input placeholder="Todo..." ref="todo" />
+        <input placeholder="Todo..." ref="todo" autoFocus="true" />
         <button>Add</button>
       </form>);
   }
@@ -94,7 +53,7 @@ var TodoApp = React.createClass({
   getInitialState: function() {
     return {data: []};
   },
-  componentDidMount: function() {
+  fetchTodos: function() {
     $.ajax({
       url: this.props.url,
       dataType: 'json',
@@ -105,6 +64,9 @@ var TodoApp = React.createClass({
         console.log('An error ('+status+') occured:', error.toString());
       }.bind(this)
     });
+  },
+  componentDidMount: function() {
+    this.fetchTodos();
   },
   saveTodo: function(todo) {
     // quick! append added todo to list of todos
@@ -127,11 +89,27 @@ var TodoApp = React.createClass({
       }.bind(this)
     });
   },
+  setStatus: function(id, status) {
+    // update todo in db
+    $.ajax({
+      url: '/todos/'+id+'/status.json',
+      dataType: 'json',
+      type: 'POST',
+      data: {completed: status},
+      success: function(data) {
+        // update list of todos from fresh db
+        this.setState({data: data.todos});
+      }.bind(this),
+      error: function(xhr, status, error) {
+        console.log('An error ('+status+') occured:', error.toString());
+      }.bind(this)
+    });
+  },
   render: function() {
     return (
       <div>
         <TodoForm onTodoSubmit={this.saveTodo} />
-        <TodoList data={this.state.data} />
+        <TodoList data={this.state.data} onSetStatus={this.setStatus} />
       </div>
     );
   }

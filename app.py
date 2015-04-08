@@ -87,27 +87,22 @@ def create_todo():
     except Exception as e:
         return jsonify({"response": "ERROR %s" % str(e)})
 
-@app.route('/<int:todo_id>/status.json', methods = ['POST'])
+@app.route('/todos/<int:todo_id>/status.json', methods = ['POST'])
 def set_status(todo_id):
     try:
+        completed = 1 if request.form['completed'] == 'true' else 0
         query_db('update todos set completed = ? where id = ?',
-            [request.form['completed'], todo_id], True)
-        resp = jsonify(message = 'updated todo',
-                       id = todo_id,
-                       completed = request.form['completed'])
-        return resp
+            [completed, todo_id], True)
+        return redirect(url_for('show_todos'))
     except Exception as e:
         return jsonify({"response": "ERROR %s" % str(e)})
 
-@app.route('/<int:todo_id>/order.json', methods = ['POST'])
+@app.route('/todos/<int:todo_id>/order.json', methods = ['POST'])
 def set_order(todo_id):
     try:
         query_db('update todos set below = ? where id = ?',
             [request.form['below'], todo_id], True)
-        resp = jsonify(message = 'updated todo',
-                       id = todo_id,
-                       below = request.form['below'])
-        return resp
+        return redirect(url_for('show_todos'))
     except Exception as e:
         return jsonify({"response": "ERROR %s" % str(e)})
 
