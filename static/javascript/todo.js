@@ -67,41 +67,77 @@ var TodoList = React.createClass({
   }
 });
 var TodoForm = React.createClass({
-  getInitialState: function() {
-    return {text: ''};
-  },
   onChange: function(e) {
     this.setState({text: e.target.value});
   },
   handleSubmit: function(e) {
     e.preventDefault();
-    var nextItems = this.state.items.concat([this.state.text]);
-    var nextText = '';
-    this.setState({items: nextItems, text: nextText});
+    var title = React.findDOMNode(this.refs.todo).value.trim();
+
+    if (!title) {
+      return;
+    }
+
+    this.props.onTodoSubmit({title: title});
+
+    React.findDOMNode(this.refs.todo).value = '';
   },
   render: function() {
     return (
       <form onSubmit={this.handleSubmit}>
-        <input onChange={this.onChange} value={this.state.text} />
+        <input placeholder="Todo..." ref="todo" />
         <button>Add</button>
       </form>);
   }
 });
 var TodoApp = React.createClass({
   getInitialState: function() {
-    return {text: ''};
+    return {data: []};
+  },
+  componentDidMount: function() {
+    $.ajax({
+      url: this.props.url,
+      dataType: 'json',
+      success: function(data) {
+        this.setState({data: data.todos});
+      }.bind(this),
+      error: function(xhr, status, error) {
+        console.log('An error ('+status+') occured:', error.toString());
+      }.bind(this)
+    });
+  },
+  saveTodo: function(todo) {
+    // quick! append added todo to list of todos
+    var todos = this.state.data;
+    var newTodos = todos.concat([todo]);
+    this.setState({data: newTodos});
+
+    // save todo in db
+    $.ajax({
+      url: this.props.url,
+      dataType: 'json',
+      type: 'POST',
+      data: todo,
+      success: function(data) {
+        // update list of todos from fresh db
+        this.setState({data: data.todos});
+      }.bind(this),
+      error: function(xhr, status, error) {
+        console.log('An error ('+status+') occured:', error.toString());
+      }.bind(this)
+    });
   },
   render: function() {
     return (
       <div>
-        <TodoForm />
-        <TodoList data={this.props.data} />
+        <TodoForm onTodoSubmit={this.saveTodo} />
+        <TodoList data={this.state.data} />
       </div>
     );
   }
 });
 
 React.render(
-  <TodoApp data={data} />,
+  <TodoApp url="todos.json" />,
   document.getElementById('app')
 );
