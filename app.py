@@ -35,7 +35,7 @@ def teardown_request(exception):
 def show_home():
     return render_template('home.html')
 
-@app.route('/todos.json')
+@app.route('/todos.json', methods = ['GET'])
 def show_todos():
     # get cursor of results
     cur = g.db.execute('select id, title, completed, below from todos order \
@@ -53,12 +53,18 @@ def show_todos():
     # respond with json
     return jsonify(todos = json_results)
 
-@app.route('/add.json', methods = ['POST'])
-def add_todo():
+@app.route('/todos.json', methods = ['POST'])
+def create_todo():
     # try to save
     try:
+        # get last todo
+        cur = g.db.execute('select id from todos order by below desc limit 1')
+        res = cur.fetchall()
+        print res
+        last = res[0]
+        # insert new todo below the last one in the list
         g.db.execute('insert into todos (title, below) values (?, ?)',
-            [request.form['title'], request.form['below']])
+            [request.form['title'], last[0]])
         g.db.commit()
         # prep response
         resp = jsonify(message = 'created todo')
