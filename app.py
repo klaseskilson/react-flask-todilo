@@ -20,16 +20,37 @@ def init_db():
         # execute the prepared commands
         db.commit()
 
-@app.before_request
-def before_request():
-    g.db = connect_db()
+"""
+    Database helpers
+"""
+# set g.db
+def get_db():
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = connect_db()
+    return db
 
-# called after response is constructed
-@app.teardown_request
-def teardown_request(exception):
-    db = getattr(g, 'db', None)
+# when context is closed, close connection to db
+@app.teardown_appcontext
+def close_connection(exception):
+    db = getattr(g, '_database', None)
     if db is not None:
         db.close()
+
+# neat helper for simplified queries
+def query_db(query, args = (), commit = False, one=False):
+    cur = get_db().execute(query, args)
+    if commit:
+        get_db().commit()
+        return None
+    else:
+        rv = cur.fetchall()
+        cur.close()
+        return (rv[0] if rv else None) if one else rv
+
+"""
+    Routes
+"""
 
 @app.route('/')
 def show_home():
@@ -37,11 +58,9 @@ def show_home():
 
 @app.route('/todos.json', methods = ['GET'])
 def show_todos():
-    # get cursor of results
-    cur = g.db.execute('select id, title, completed, below from todos order \
-                        by below asc')
-    # fetch the entries
-    todos = cur.fetchall()
+    # use query_db helper to fetch todos
+    todos = query_db('select id, title, completed, below from todos order by \
+                      below asc')
     json_results = []
     # iterate over todos
     for todo in todos:
@@ -58,14 +77,10 @@ def create_todo():
     # try to save
     try:
         # get last todo
-        cur = g.db.execute('select id from todos order by below desc limit 1')
-        res = cur.fetchall()
-        print res
-        last = res[0]
+        last = query_db('select id from todos order by below desc limit 1', (), False, True)
         # insert new todo below the last one in the list
-        g.db.execute('insert into todos (title, below) values (?, ?)',
-            [request.form['title'], last[0]])
-        g.db.commit()
+        query_db('insert into todos (title, below) values (?, ?)',
+            [request.form['title'], last[0]], True)
         # prep response
         resp = jsonify(message = 'created todo')
         return resp
@@ -75,9 +90,8 @@ def create_todo():
 @app.route('/<int:todo_id>/status.json', methods = ['POST'])
 def set_status(todo_id):
     try:
-        g.db.execute('update todos set completed = ? where id = ?',
-            [request.form['completed'], todo_id])
-        g.db.commit()
+        query_db('update todos set completed = ? where id = ?',
+            [request.form['completed'], todo_id], True)
         resp = jsonify(message = 'updated todo',
                        id = todo_id,
                        completed = request.form['completed'])
@@ -88,15 +102,18 @@ def set_status(todo_id):
 @app.route('/<int:todo_id>/order.json', methods = ['POST'])
 def set_order(todo_id):
     try:
-        g.db.execute('update todos set below = ? where id = ?',
-            [request.form['below'], todo_id])
-        g.db.commit()
+        query_db('update todos set below = ? where id = ?',
+            [request.form['below'], todo_id], True)
         resp = jsonify(message = 'updated todo',
                        id = todo_id,
                        below = request.form['below'])
         return resp
     except Exception as e:
         return jsonify({"response": "ERROR %s" % str(e)})
+
+"""
+    Run the app!
+"""
 
 if __name__ == '__main__':
     app.run()
