@@ -1,0 +1,88 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  width: 100%;
+}
+
+body {
+  padding: 15px;
+  background: #f6f5f5;
+  font-family: 'Open Sans', sans-serif;
+  color: #333;
+}
+
+#app {
+  width: 100%;
+  max-width: 500px;
+  paddin: 0;
+  border-radius: 5px;
+  border: 1px solid #e4e4e4;
+  background: white;
+  margin: 0 auto;
+}
+
+.todoheader {
+  text-align: center;
+  border-bottom: 1px dashed #d2d0d0;
+}
+
+  .todoheader h1 {
+    line-height: 120px;
+    margin: 0;
+  }
+
+.todolist {
+
+}
+
+  .todolist__todo {
+    width: 100%;
+    margin: 0;
+    padding: 10px 20px;
+  }
+    .todolist__todo:nth-child(odd) {
+      background: #F4F7FA;
+    }
+
+form {
+  padding: 20px;
+}
+
+input:not([type="checkbox"]),
+button {
+  border: 0;
+  border-radius: 5px;
+  padding: 8px 10px;
+  color: #646363;
+  font-size: .9em;
+}
+
+input[type="text"] {
+  border: 1px solid #b7b6b6;
+  font-weight: 300;
+  width: calc(66.6666666% - 10px);
+  margin-right: 10px;
+}
+
+button {
+  border: 1px solid #999;
+  width: 33.3333333%;
+  background: #ebeae9;
+  background: linear-gradient(to bottom,  #ebeae9 3%,#ebeae9 49%,#d8d7d6 54%,#d8d7d6 98%);
+}
+
+@media screen and (min-width: 768px) {
+  #app {
+    position: relative;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    max-height: 100%;
+    overflow: auto;
+  }
+}

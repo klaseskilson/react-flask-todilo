@@ -5,7 +5,7 @@ var Todo = React.createClass({
   },
   render: function() {
     return (
-      <article>
+      <article className="todolist__todo">
         <input type="checkbox" onChange={this.toggleStatus} value="1"
           checked={this.props.completed} />
         {this.props.title}
@@ -22,7 +22,7 @@ var TodoList = React.createClass({
         completed={todo.completed} key={todo.id}
         onSetStatus={list.props.onSetStatus} />);
     });
-    return <div>{todoNodes}</div>;
+    return <div className="todolist">{todoNodes}</div>;
   }
 });
 var TodoForm = React.createClass({
@@ -44,8 +44,9 @@ var TodoForm = React.createClass({
   render: function() {
     return (
       <form onSubmit={this.handleSubmit}>
-        <input placeholder="Todo..." ref="todo" autoFocus="true" />
-        <button>Add</button>
+        <input placeholder="What needs to be done?" ref="todo" autoFocus="true"
+          type="text" />
+        <button>Add Todo</button>
       </form>);
   }
 });
@@ -108,6 +109,9 @@ var TodoApp = React.createClass({
   render: function() {
     return (
       <div>
+        <header className="todoheader">
+          <h1>Todos</h1>
+        </header>
         <TodoForm onTodoSubmit={this.saveTodo} />
         <TodoList data={this.state.data} onSetStatus={this.setStatus} />
       </div>
