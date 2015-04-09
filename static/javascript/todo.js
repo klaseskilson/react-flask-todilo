@@ -1,10 +1,10 @@
 var Todo = React.createClass({
+  mixins: [Sortable],
   toggleStatus: function(e) {
     this.props.onSetStatus(this.props.id, !this.props.completed);
     this.props.completed = !this.props.completed;
   },
   extraClassName: function() {
-    console.log(this);
     return (this.props.completed ? 'todo--completed' : '');
   },
   render: function() {

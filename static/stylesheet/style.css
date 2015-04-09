@@ -64,6 +64,9 @@ a {
   .todo:nth-child(odd) {
     background: #F4F7FA;
   }
+  .todo__reorder {
+
+  }
   .todo__checkbox {
     margin-right: 10px;
   }
