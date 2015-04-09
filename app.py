@@ -71,7 +71,7 @@ def show_todos():
              'below': todo[3]}
         json_results.append(t)
     # respond with json
-    return jsonify(todos = json_results)
+    return jsonify(items = json_results)
 
 @app.route('/todos.json', methods = ['POST'])
 def create_todo():

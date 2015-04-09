@@ -64,12 +64,17 @@ a {
   .todo:nth-child(odd) {
     background: #F4F7FA;
   }
-  .todo__reorder {
-
-  }
   .todo__checkbox {
     margin-right: 10px;
   }
+  .todo__reorder {
+    opacity: 0;
+    float: right;
+    transition: all .1s ease;
+  }
+    .todo:hover .todo__reorder {
+      opacity: 1;
+    }
 
 form {
   padding: 20px;
