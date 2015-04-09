@@ -1,5 +1,5 @@
 # import our packages
-import sqlite3
+import sqlite3, json
 from flask import Flask, request, g, render_template, jsonify, flash, redirect, \
 url_for
 from contextlib import closing
@@ -105,11 +105,15 @@ def set_status(todo_id):
     except Exception as e:
         return jsonify({"response": "ERROR %s" % str(e)})
 
-@app.route('/todos/<int:todo_id>/order.json', methods = ['POST'])
-def set_order(todo_id):
+@app.route('/todos/set_order.json', methods = ['POST'])
+def set_order():
+    # convert from json string to python array
+    order = json.loads(request.form['order'])
     try:
-        query_db('update todos set ordered = ? where id = ?',
-            [request.form['ordered'], todo_id], True)
+        # iterate over items in order array
+        for todo in order:
+            query_db('update todos set ordered = ? where id = ?',
+                [todo['order'], todo['id']], True)
         return redirect(url_for('show_todos'))
     except Exception as e:
         return jsonify({"response": "ERROR %s" % str(e)})

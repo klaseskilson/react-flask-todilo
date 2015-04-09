@@ -88,7 +88,7 @@ var TodoApp = React.createClass({
     // quick! append added todo to list of todos
     var todos = this.state.data.items;
     var newTodos = todos.concat([todo]);
-    this.setState({data: {todos: newTodos}});
+    this.setState({data: {items: newTodos}});
 
     // save todo in db
     $.ajax({
@@ -104,12 +104,6 @@ var TodoApp = React.createClass({
         console.log('An error ('+status+') occured:', error.toString());
       }.bind(this)
     });
-  },
-  sort: function(items, dragging) {
-    var data = this.state.data;
-    data.items = items;
-    data.dragging = dragging;
-    this.setState({data: data});
   },
   setStatus: function(id, status) {
     // update todo in db
@@ -140,6 +134,42 @@ var TodoApp = React.createClass({
       success: function(data) {
         // update list of todos from fresh db
         this.setState({data: data});
+      }.bind(this),
+      error: function(xhr, status, error) {
+        console.log('An error ('+status+') occured:', error.toString());
+      }.bind(this)
+    });
+  },
+  sort: function(items, dragging) {
+    var data = this.state.data;
+    data.items = items;
+    data.dragging = dragging;
+    this.setState({data: data});
+    if (this.sendSetOrder) {
+      var self = this;
+      this.sendSetOrder = false;
+      setTimeout(function() {
+        self.setOrder();
+      }, 3000);
+    }
+  },
+  sendSetOrder: true,
+  setOrder: function() {
+    // get order
+    var ordered = this.state.data.items.map(function(item, index) {
+      return {id: item.id, order: index};
+    });
+    console.log('sending!');
+    // send request
+    $.ajax({
+      url: '/todos/set_order.json',
+      dataType: 'json',
+      type: 'POST',
+      data: {order: JSON.stringify(ordered)},
+      success: function(data) {
+        // update list of todos from fresh db
+        // this.setState({data: data});
+        this.sendSetOrder = true;
       }.bind(this),
       error: function(xhr, status, error) {
         console.log('An error ('+status+') occured:', error.toString());
