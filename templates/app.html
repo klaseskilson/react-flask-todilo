@@ -1,4 +1,10 @@
 {% extends "layout.html" %}
 {% block body %}
   <div id="app"></div>
+  <script type="text/jsx">
+    React.render(
+      <TodoApp url="todos.json" />,
+      document.getElementById('app')
+    );
+  </script>
 {% endblock %}
