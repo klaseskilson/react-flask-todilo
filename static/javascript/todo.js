@@ -3,11 +3,15 @@ var Todo = React.createClass({
     this.props.onSetStatus(this.props.id, !this.props.completed);
     this.props.completed = !this.props.completed;
   },
+  extraClassName: function() {
+    console.log(this);
+    return (this.props.completed ? 'todo--completed' : '');
+  },
   render: function() {
     return (
-      <article className="todolist__todo">
+      <article className={"todo " + this.extraClassName()}>
         <input type="checkbox" onChange={this.toggleStatus} value="1"
-          checked={this.props.completed} />
+          checked={this.props.completed} className="todo__checkbox" />
         {this.props.title}
       </article>
       );

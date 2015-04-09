@@ -12,6 +12,7 @@ body {
   padding: 15px;
   background: #f6f5f5;
   font-family: 'Open Sans', sans-serif;
+  font-weight: 300;
   color: #333;
 }
 
@@ -37,32 +38,35 @@ a {
 
   .todoheader h1 {
     line-height: 120px;
+    font-weight: 700;
     margin: 0;
   }
 
 .todofooter {
   border-top: 1px dashed #d2d0d0;
   padding: 20px;
-  font-weight: 300;
-  font-size: .9em;
+  font-size: .8em;
   color: #999;
 }
   .todofooter__completeall {
     float: right;
   }
 
-.todolist {
-
+.todo {
+  width: 100%;
+  margin: 0;
+  padding: 10px 20px;
 }
-
-  .todolist__todo {
-    width: 100%;
-    margin: 0;
-    padding: 10px 20px;
+  .todo--completed {
+    text-decoration: line-through;
+    color: #999;
   }
-    .todolist__todo:nth-child(odd) {
-      background: #F4F7FA;
-    }
+  .todo:nth-child(odd) {
+    background: #F4F7FA;
+  }
+  .todo__checkbox {
+    margin-right: 10px;
+  }
 
 form {
   padding: 20px;
@@ -79,7 +83,6 @@ button {
 
 input[type="text"] {
   border: 1px solid #b7b6b6;
-  font-weight: 300;
   width: calc(66.6666666% - 10px);
   margin-right: 10px;
 }
