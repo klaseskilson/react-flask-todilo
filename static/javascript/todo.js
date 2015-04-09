@@ -106,6 +106,25 @@ var TodoApp = React.createClass({
       }.bind(this)
     });
   },
+  notDoneFilter: function(todo) {
+    return !todo.completed;
+  },
+  clearAll: function() {
+    // it was either making ugly ajax call (I hate how this code looks)
+    // or making one call for every todo entry
+    $.ajax({
+      url: '/todos/complete_all.json',
+      dataType: 'json',
+      type: 'POST',
+      success: function(data) {
+        // update list of todos from fresh db
+        this.setState({data: data.todos});
+      }.bind(this),
+      error: function(xhr, status, error) {
+        console.log('An error ('+status+') occured:', error.toString());
+      }.bind(this)
+    });
+  },
   render: function() {
     return (
       <div>
@@ -114,6 +133,14 @@ var TodoApp = React.createClass({
         </header>
         <TodoForm onTodoSubmit={this.saveTodo} />
         <TodoList data={this.state.data} onSetStatus={this.setStatus} />
+        <footer className="todofooter">
+          <span className="todofooter__counter">
+            {this.state.data.filter(this.notDoneFilter).length} items left
+          </span>
+          <a href="#" onClick={this.clearAll} className="todofooter__completeall">
+            Mark all as complete
+          </a>
+        </footer>
       </div>
     );
   }

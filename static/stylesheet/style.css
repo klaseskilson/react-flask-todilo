@@ -15,6 +15,11 @@ body {
   color: #333;
 }
 
+a {
+  color: #448CCB;
+  text-decoration: none;
+}
+
 #app {
   width: 100%;
   max-width: 500px;
@@ -33,6 +38,17 @@ body {
   .todoheader h1 {
     line-height: 120px;
     margin: 0;
+  }
+
+.todofooter {
+  border-top: 1px dashed #d2d0d0;
+  padding: 20px;
+  font-weight: 300;
+  font-size: .9em;
+  color: #999;
+}
+  .todofooter__completeall {
+    float: right;
   }
 
 .todolist {

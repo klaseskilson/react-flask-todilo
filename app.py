@@ -87,6 +87,14 @@ def create_todo():
     except Exception as e:
         return jsonify({"response": "ERROR %s" % str(e)})
 
+@app.route('/todos/complete_all.json', methods = ['POST'])
+def complete_all():
+    try:
+        query_db('update todos set completed=1', (), True)
+        return redirect(url_for('show_todos'))
+    except Exception as e:
+        return jsonify({"response": "ERROR %s" % str(e)})
+
 @app.route('/todos/<int:todo_id>/status.json', methods = ['POST'])
 def set_status(todo_id):
     try:
