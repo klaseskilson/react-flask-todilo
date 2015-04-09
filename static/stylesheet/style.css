@@ -66,8 +66,26 @@ a {
   }
   .todo__checkbox {
     margin-right: 10px;
+    appearance: none;
+    -webkit-appearance: none;
+    display: inline-block;
+    height: 19px;
+    width: 19px;
+    background: url('/static/images/unchecked.png') center no-repeat;
+    background-size: contain;
+    position: relative;
   }
+    .todo__checkbox:checked {
+      background: url('/static/images/checked.png') center no-repeat;
+    }
+    .todo__checkbox:focus {
+      outline: none;
+    }
   .todo__reorder {
+    display: inline-block;
+    width: 10px;
+    height: 1.3em;
+    background: url('/static/images/drag_handle.png') center no-repeat;
     opacity: 0;
     float: right;
     transition: all .1s ease;
