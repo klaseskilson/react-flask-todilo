@@ -60,15 +60,15 @@ def show_app():
 @app.route('/todos.json', methods = ['GET'])
 def show_todos():
     # use query_db helper to fetch todos
-    todos = query_db('select id, title, completed, below from todos order by \
-                      below asc')
+    todos = query_db('select id, title, completed, ordered from todos order by \
+                      ordered asc')
     json_results = []
     # iterate over todos
     for todo in todos:
         t = {'id': todo[0],
              'title': todo[1],
              'completed': todo[2],
-             'below': todo[3]}
+             'ordered': todo[3]}
         json_results.append(t)
     # respond with json
     return jsonify(items = json_results)
@@ -78,10 +78,10 @@ def create_todo():
     # try to save
     try:
         # get last todo
-        last = query_db('select id from todos order by below desc limit 1', (), False, True)
+        last = query_db('select ordered from todos order by ordered desc limit 1', (), False, True)
         last = last[0] if last else None
         # insert new todo below the last one in the list
-        query_db('insert into todos (title, below) values (?, ?)',
+        query_db('insert into todos (title, ordered) values (?, ?)',
             [request.form['title'], last], True)
         return redirect(url_for('show_todos'))
     except Exception as e:
@@ -108,8 +108,8 @@ def set_status(todo_id):
 @app.route('/todos/<int:todo_id>/order.json', methods = ['POST'])
 def set_order(todo_id):
     try:
-        query_db('update todos set below = ? where id = ?',
-            [request.form['below'], todo_id], True)
+        query_db('update todos set ordered = ? where id = ?',
+            [request.form['ordered'], todo_id], True)
         return redirect(url_for('show_todos'))
     except Exception as e:
         return jsonify({"response": "ERROR %s" % str(e)})

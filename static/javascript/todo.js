@@ -10,8 +10,12 @@ var Todo = React.createClass({
   render: function() {
     return (
       <article {...this.props} className={"todo " + this.extraClassName()}>
-        <input type="checkbox" onChange={this.toggleStatus} value="1"
-          checked={this.props.todo.completed} className="todo__checkbox" />
+        <input
+          type="checkbox"
+          onChange={this.toggleStatus}
+          value="1"
+          checked={this.props.todo.completed}
+          className="todo__checkbox" />
         {this.props.todo.title}
         <span className="todo__reorder">r</span>
       </article>
