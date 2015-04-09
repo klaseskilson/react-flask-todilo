@@ -15,9 +15,9 @@
     "tests"
   ],
   "dependencies": {
-    "react": "~0.12.0",
+    "react": "~0.13.1",
     "underscore": "~1.6.0",
-    "react-sortable": "git@github.com:prometheusresearch/react-sortable.git",
+    "react-sortable": "git@github.com:klaseskilson/react-sortable.git",
     "jquery": "~2.1.3",
     "normalize.css": "~3.0.3"
   },

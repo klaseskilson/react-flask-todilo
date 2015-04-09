@@ -24,6 +24,7 @@ var TodoList = React.createClass({
       return (
         <Todo
           todo={todo}
+          key={todo.id}
           reactKey={index}
           data-id={index}
           onSetStatus={this.props.onSetStatus}
@@ -35,23 +36,18 @@ var TodoList = React.createClass({
   }
 });
 var TodoForm = React.createClass({
-  getInitialState: function() {
-    return {text: ''};
-  },
-  onChange: function(e) {
-    this.setState({text: e.target.value});
-  },
   handleSubmit: function(e) {
     e.preventDefault();
     // get todo text
-    var title = this.state.text;
+    var title = React.findDOMNode(this.refs.todo).value.trim();
+
     if (!title) {
       return;
     }
     // save input
     this.props.onTodoSubmit({title: title});
     // empty input
-    this.setState({text: ''});
+    React.findDOMNode(this.refs.todo).value = '';
   },
   render: function() {
     return (
@@ -60,8 +56,6 @@ var TodoForm = React.createClass({
           placeholder="What needs to be done?"
           ref="todo"
           autoFocus="true"
-          onChange={this.onChange}
-          value={this.state.text}
           type="text" />
         <button>Add Todo</button>
       </form>);
