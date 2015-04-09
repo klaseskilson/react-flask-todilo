@@ -75,10 +75,10 @@ def show_todos():
 
 @app.route('/todos.json', methods = ['POST'])
 def create_todo():
-    # try to save
     try:
         # get last todo
         last = query_db('select ordered from todos order by ordered desc limit 1', (), False, True)
+        # and then get the order number of that todo
         last = last[0] if last else None
         # insert new todo below the last one in the list
         query_db('insert into todos (title, ordered) values (?, ?)',
@@ -98,7 +98,9 @@ def complete_all():
 @app.route('/todos/<int:todo_id>/status.json', methods = ['POST'])
 def set_status(todo_id):
     try:
+        # convert post string to sql bool
         completed = 1 if request.form['completed'] == 'true' else 0
+        # update
         query_db('update todos set completed = ? where id = ?',
             [completed, todo_id], True)
         return redirect(url_for('show_todos'))
@@ -112,6 +114,7 @@ def set_order():
     try:
         # iterate over items in order array
         for todo in order:
+            # update todo
             query_db('update todos set ordered = ? where id = ?',
                 [todo['order'], todo['id']], True)
         return redirect(url_for('show_todos'))

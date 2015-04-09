@@ -55,7 +55,7 @@ a {
 .todo {
   width: 100%;
   margin: 0;
-  padding: 10px 20px;
+  padding: 15px 20px;
 }
   .todo--completed {
     text-decoration: line-through;

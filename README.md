@@ -1,3 +1,10 @@
+# Todo!
+
+![Todo!](static/images/printscreen.png)
+
+This is a simple todo app in Flash and React. It features a orderable todo list
+with a SQLite database attached to it.
+
 ## Setup
 
 Make sure you have Python installed. Then run `pip install Flask` to install
@@ -9,3 +16,21 @@ Then you need to install the database. Start a python terminal, and run
 >>> from app import init_db
 >>> init_db()
 ```
+
+With a database up and running, you'll probably want to install our depenencies
+by running `bower install` in the root of this app.
+
+## Running
+
+The app is started by running `python app.py` in your favourite terminal.
+
+## Todo
+
+You're laughing right now, I understand that.
+
+When there is time, this should be done:
+
+* Clean up [`todo_app.js`](static/javascript/todo_app.js) and all it's ugly ajax calls
+* Move database helpers in [`app.py`](app.py) to separate file
+* Improve the semi-scetchy draggable function, so that it can be updated instantly etc
+* Align checkbox better
