@@ -78,15 +78,10 @@ var TodoApp = React.createClass({
     data.items = items;
     data.dragging = dragging;
     this.setState({data: data});
-    if (this.sendSetOrder) {
-      var self = this;
-      this.sendSetOrder = false;
-      setTimeout(function() {
-        self.setOrder();
-      }, 3000);
+    if (dragging == undefined) {
+      this.setOrder();
     }
   },
-  sendSetOrder: true,
   setOrder: function() {
     // get order
     var ordered = this.state.data.items.map(function(item, index) {
@@ -101,7 +96,6 @@ var TodoApp = React.createClass({
       success: function(data) {
         // update list of todos from fresh db
         this.setState({data: data});
-        this.sendSetOrder = true;
       }.bind(this),
       error: function(xhr, status, error) {
         console.log('An error ('+status+') occured:', error.toString());
