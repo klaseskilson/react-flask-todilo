@@ -2,8 +2,9 @@
 
 ![Todo!](static/images/printscreen.png)
 
-This is a simple todo app in Flash and React. It features a orderable todo list
-with a SQLite database attached to it.
+This is a simple todo app in Flask and React. It features a orderable todo list
+with a SQLite database attached to it. There is probably some examples of both 
+bad practices here.
 
 ## Setup
 
