@@ -3,23 +3,21 @@
 ![Todo!](static/images/printscreen.png)
 
 This is a simple todo app in Flask and React. It features a orderable todo list
-with a SQLite database attached to it. There is probably some examples of both 
-bad practices here.
+with a SQLite database attached to it.
 
 ## Setup
 
-Make sure you have Python installed. Then run `pip install Flask` to install
-Flask.
+Make sure you have Python installed. Run the following commands in your
+favourite terminal to install depenencies and get started.
 
-Then you need to install the database. Start a python terminal, and run
-
-```python
->>> from app import init_db
->>> init_db()
+```shell
+pip install Flask
+python setup.py
+bower install
 ```
 
-With a database up and running, you'll probably want to install our depenencies
-by running `bower install` in the root of this app.
+This will install Flask (if it isn't installed allready), install our databse
+and then install the needed front-end depenencies.
 
 ### Running
 
